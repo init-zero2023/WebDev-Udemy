@@ -11,7 +11,9 @@ body{
 
 .container-fluid{
 	/*3% padding to top-bottom and 15% padding to left-right*/
-	padding: 3% 15%;  
+	padding: 3% 15% 8%;  
+	position: relative;
+	z-index: 0;
 }
 h1{
 	font-family: "montserrat";
@@ -20,6 +22,12 @@ h1{
 	font-weight: 900;
 }
 
+
+h2{
+	font-family: montserrat;
+	font-size: 3rem;
+	line-height: 1.5;
+}
 
 h3{
 	font-family: montserrat;
@@ -57,10 +65,14 @@ p{
 .title-image{
 	width: 60%;
 	transform: rotate(25deg);
+	position:absolute;
+	right: 30%
 }
 
 #features{
+	background-color: white;
 	padding: 7% 15%;
+	position: relative;
 }
 
 .feature-box{
@@ -72,4 +84,80 @@ p{
 }
 .icon:hover{
 	color:#ff4c68;
+}
+
+#testimonials{
+	text-align: center;
+	background-color: #ef8172;
+	color:#fff;
+}
+
+.testimonial-image{
+	width: 10%;
+	border-radius: 100%;
+	margin:20px;
+}
+
+#press{
+	background-color: #ef8172;
+	text-align: center;
+	padding: 3%;
+}
+
+.press-logo{
+	width:15%;
+	margin: 20px 20px 15px;
+}
+.carousel-item{
+	padding:7% 15%;
+}
+
+
+/*Pricing Section*/
+
+#pricing{
+	padding: 100px;
+	text-align: center;
+}
+
+.pricing-column{
+	padding: 3% 2%;
+}
+
+@media (max-width: 1028px){
+	#title{
+		text-align: center;
+	}
+	.title-image{
+		transform:rotate(0);
+		position: static;
+		width: 70%;
+	}
+	h1{
+		text-align: center;
+
+	}
+}
+
+#cta{
+	color: white;
+	text-align: center;
+	background-color: #ff4c68;
+	padding: 2% 15%;
+}
+
+.cta-heading{
+	font-family: Montserrat;
+	font-size: 3.5rem;
+	line-height: 1.5;
+}
+
+#footer{
+	text-align: center;
+	padding: 3% 15%;
+
+}
+.contact-icon{
+	color: black;
+	margin:4px;
 }
