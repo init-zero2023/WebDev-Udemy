@@ -1,0 +1,14 @@
+// In asynchronous model, one line runs after next regardless of how long each line takes to execute.
+console.log("Starting");
+
+// allows us to run some code after a specific amount of time has passed
+// first parameter is a function and second paramter is time in millisecond
+setTimeout(()=>{
+    console.log('2 second timer');
+}, 2000);
+
+setTimeout(()=>{
+    console.log('0 second timer');
+}, 0);
+
+console.log("Stoping");
