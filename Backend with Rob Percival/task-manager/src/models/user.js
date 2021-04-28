@@ -1,7 +1,10 @@
 const mongoose = require('mongoose')
 const validator = require('validator');
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+const Task = require('./task')
 
-const User = mongoose.model('User',{
+const userSchema = new mongoose.Schema({
     name:{
         type: String,
         required: true,
@@ -21,6 +24,7 @@ const User = mongoose.model('User',{
     },
     email:{
         type: String,
+        unique: true, 
         trim: true,   // for trimming spaces before and after value
         required: true,
         validate(value){
@@ -45,7 +49,79 @@ const User = mongoose.model('User',{
                         throw new Error('Password cannot contain "password"')
             }
         }
-    }
+    },
+    tokens:[{
+        token:{
+            type: String,
+            required: true,
+
+        }
+    }],
+},{
+    timestamps:true,
 })
+
+userSchema.virtual('tasks', {
+    ref: 'Task',
+    localField: '_id',
+    foreignField: 'owner'
+})
+
+// methods -> acessible on instances model
+// this method is binded that's why we cannot use arrow function here
+userSchema.methods.generateAuthToken = async function(){
+    const user = this
+    const token = jwt.sign({_id: user._id.toString()},'thisismynewtoken')  // to provide our payload
+
+    user.tokens = user.tokens.concat({token})
+    await user.save()
+    return token
+
+}
+
+userSchema.methods.toJSON = function(){
+    const user = this
+    const userObject = user.toObject()
+
+    delete userObject.password
+    delete userObject.tokens
+
+    return userObject
+}
+
+// statics -> accessible on model methods 
+userSchema.statics.findByCredentials = async (email, password)=>{
+    const user = await User.findOne({ email})
+    if(!user){
+        throw new Error("Unable to find account registered with this email")
+    }
+    const isMatch = await bcrypt.compare(password, user.password)
+    if(!isMatch){
+        throw new Error("Password incorrect")
+    }
+    return user
+}
+
+// hash the plain text password
+userSchema.pre('save', async function(next){
+    // this.password
+    // console.log('just before saving')
+
+    // hashing password if either password is modified or a new user is created
+    if(this.isModified('password')){
+        this.password = await bcrypt.hash(this.password, 8)
+    }
+    next()  // program will hang if next never called
+})
+
+// deletes user tasks when user is deleted
+
+userSchema.pre('remove', async function(next){
+    const user  = this
+    await Task.deleteMany({ owner: user._id})
+    next()
+})
+
+const User = mongoose.model('User', userSchema)
 
 module.exports = User;
